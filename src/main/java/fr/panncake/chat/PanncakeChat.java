@@ -38,6 +38,7 @@ public class PanncakeChat extends JavaPlugin {
                 getConfig().getString("redis.password"),
                 getConfig().getInt("redis.timeout")
         );
+        this.redisManager.connect();
 
         Objects.requireNonNull(getCommand("chat")).setExecutor(new ChatCommand());
         Objects.requireNonNull(getCommand("chat")).setTabCompleter(new ChatCompleter());
