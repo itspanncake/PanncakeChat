@@ -1,6 +1,7 @@
 package fr.panncake.chat.managers;
 
 import fr.panncake.chat.PanncakeChat;
+import fr.panncake.chat.models.Channel;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,22 +66,31 @@ public class RedisManager {
         }
     }
 
-    private void handleIncomingMessage(String jedisChannel, String message) {
+    private void handleIncomingMessage(String redisChannel, String message) {
         String[] split = message.split("\\|\\|\\|", 4);
         if (split.length != 4) return;
 
         String server = split[0];
-        String channel = split[1];
+        String channelName = split[1];
         String player = split[2];
         String content = split[3];
 
         Bukkit.getScheduler().runTask(PanncakeChat.getInstance(), () -> {
-            Component formatted = Component.text("[" + PanncakeChat.getInstance().getChannelManager().getChannel(channel).getDisplayName() + "] "
-                    + player + ": "
-                    + content);
-            // TODO: Use config for formatting
+            Channel channel = PanncakeChat.getInstance().getChannelManager().getChannel(channelName);
 
-            Bukkit.broadcast(formatted, "panncakechat." + channel);
+            if (channel == null) return;
+
+            String formattedMessage = String.format(
+                    "<%s> [%s] <white>%s</white>: %s",
+                    channel.getDisplayName(),
+                    server,
+                    player,
+                    content
+            );
+
+            Bukkit.getOnlinePlayers().stream()
+                    .filter(p -> p.hasPermission("panncakechat." + channelName))
+                    .forEach(p -> MessageProcessor.sendFormattedMessage(p, formattedMessage));
         });
     }
 }
