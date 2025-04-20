@@ -1,0 +1,7 @@
+name: PanncakeChat
+version: 1.0.0
+api-version: 1.21
+description: Advanced cross-server chat system with custom channels
+authors:
+  - Panncake
+main: fr.panncake.chat.PanncakeChat
