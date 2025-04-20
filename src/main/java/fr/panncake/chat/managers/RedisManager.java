@@ -1,0 +1,84 @@
+package fr.panncake.chat.managers;
+
+import fr.panncake.chat.PanncakeChat;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisPubSub;
+
+public class RedisManager {
+
+    private final String host;
+    private final int port;
+    private final String password;
+    private final int timeout;
+
+    private JedisPool pool;
+    private JedisPubSub pubSub;
+
+    public RedisManager(String host, int port, String password, int timeout) {
+        this.host = host;
+        this.port = port;
+        this.password = password;
+        this.timeout = timeout;
+    }
+
+    public void connect() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(128);
+
+        if (password.isEmpty()) {
+            pool = new JedisPool(poolConfig, host, port, timeout);
+        } else {
+            pool = new JedisPool(poolConfig, host, port, timeout, password);
+        }
+
+        new Thread(() -> {
+            try (Jedis jedis = pool.getResource()) {
+                pubSub = new JedisPubSub() {
+                    @Override
+                    public void onMessage(String channel, String message) {
+                        handleIncomingMessage(channel, message);
+                    }
+                };
+                jedis.subscribe(pubSub, "panncakechat:global", "panncakechat:staff");
+            }
+        }, "Redis-Subscriber").start();
+    }
+
+    public void disconnect() {
+        if (pubSub != null) {
+            pubSub.unsubscribe();
+        }
+
+        if (pool != null) {
+            pool.close();
+        }
+    }
+
+    public void publish(String channel, String message) {
+        try (Jedis jedis = pool.getResource()) {
+            jedis.publish("panncakechat:" + channel, message);
+        }
+    }
+
+    private void handleIncomingMessage(String jedisChannel, String message) {
+        String[] split = message.split("\\|\\|\\|", 4);
+        if (split.length != 4) return;
+
+        String server = split[0];
+        String channel = split[1];
+        String player = split[2];
+        String content = split[3];
+
+        Bukkit.getScheduler().runTask(PanncakeChat.getInstance(), () -> {
+            Component formatted = Component.text("[" + server + "] " + player + ": " + content);
+            // TODO: Use config for formatting
+
+            Bukkit.broadcast(formatted, "panncakechat." + channel);
+        });
+    }
+}
