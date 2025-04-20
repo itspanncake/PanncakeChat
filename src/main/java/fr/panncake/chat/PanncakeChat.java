@@ -4,6 +4,7 @@ import fr.panncake.chat.commands.ChannelCommand;
 import fr.panncake.chat.commands.ChatCommand;
 import fr.panncake.chat.commands.tabcompleters.ChannelCompleter;
 import fr.panncake.chat.commands.tabcompleters.ChatCompleter;
+import fr.panncake.chat.listeners.ChatListener;
 import fr.panncake.chat.managers.ChannelManager;
 import fr.panncake.chat.managers.MessageProcessor;
 import fr.panncake.chat.managers.RedisManager;
@@ -43,6 +44,8 @@ public class PanncakeChat extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("channel")).setExecutor(new ChannelCommand());
         Objects.requireNonNull(getCommand("channel")).setTabCompleter(new ChannelCompleter());
+
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
 
         getLogger().info("PanncakeChat has been enabled!");
     }
