@@ -1,13 +1,17 @@
 package fr.panncake.chat;
 
 import fr.panncake.chat.managers.ChannelManager;
+import fr.panncake.chat.managers.MessageProcessor;
 import fr.panncake.chat.managers.RedisManager;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class PanncakeChat extends JavaPlugin {
 
     private static PanncakeChat instance;
+
+    private BukkitAudiences audiences;
 
     private ChannelManager channelManager;
     private RedisManager redisManager;
@@ -16,6 +20,9 @@ public class PanncakeChat extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+
+        this.audiences = BukkitAudiences.create(this);
+        MessageProcessor.init(this);
 
         this.channelManager = new ChannelManager();
         this.redisManager = new RedisManager(
@@ -30,11 +37,19 @@ public class PanncakeChat extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (audiences != null) {
+            audiences.close();
+        }
+
         getLogger().info("PanncakeChat has been disabled!");
     }
 
     public static PanncakeChat getInstance() {
         return instance;
+    }
+
+    public BukkitAudiences getAudiences() {
+        return audiences;
     }
 
     public ChannelManager getChannelManager() {
