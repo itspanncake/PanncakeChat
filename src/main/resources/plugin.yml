@@ -7,5 +7,7 @@ authors:
 main: fr.panncake.chat.PanncakeChat
 
 commands:
+  chat:
+    description: Send a message to the current channel
   channel:
     description: Choose a channel of get a list of them
