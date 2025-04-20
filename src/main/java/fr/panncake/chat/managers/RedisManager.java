@@ -75,7 +75,9 @@ public class RedisManager {
         String content = split[3];
 
         Bukkit.getScheduler().runTask(PanncakeChat.getInstance(), () -> {
-            Component formatted = Component.text("[" + server + "] " + player + ": " + content);
+            Component formatted = Component.text("[" + PanncakeChat.getInstance().getChannelManager().getChannel(channel).getDisplayName() + "] "
+                    + player + ": "
+                    + content);
             // TODO: Use config for formatting
 
             Bukkit.broadcast(formatted, "panncakechat." + channel);
