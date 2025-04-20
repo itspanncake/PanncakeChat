@@ -1,0 +1,5 @@
+redis:
+  host: ""
+  port: 6379
+  password: ""
+  timeout: 2000
