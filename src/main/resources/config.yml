@@ -5,3 +5,9 @@ redis:
   timeout: 2000
 
 server-name: "server1"
+
+default-channel: "global"
+
+formats:
+  global: "<gray>[%server%] <white>%player% <dark_gray>» <white>%message%"
+  staff: "<aqua>[Staff] <gray>[%server%] <white>%player% <dark_gray>» <light_purple>%message%"
