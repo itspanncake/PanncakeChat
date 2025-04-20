@@ -10,6 +10,7 @@ public class PanncakeChat extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        saveDefaultConfig();
 
         getLogger().info("PanncakeChat has been enabled!");
     }
