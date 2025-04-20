@@ -5,3 +5,7 @@ description: Advanced cross-server chat system with custom channels
 authors:
   - Panncake
 main: fr.panncake.chat.PanncakeChat
+
+commands:
+  channel:
+    description: Choose a channel of get a list of them

@@ -1,10 +1,13 @@
 package fr.panncake.chat;
 
+import fr.panncake.chat.commands.ChannelCommand;
 import fr.panncake.chat.managers.ChannelManager;
 import fr.panncake.chat.managers.MessageProcessor;
 import fr.panncake.chat.managers.RedisManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 
 public class PanncakeChat extends JavaPlugin {
@@ -31,6 +34,8 @@ public class PanncakeChat extends JavaPlugin {
                 getConfig().getString("redis.password"),
                 getConfig().getInt("redis.timeout")
         );
+
+        Objects.requireNonNull(getCommand("channel")).setExecutor(new ChannelCommand());
 
         getLogger().info("PanncakeChat has been enabled!");
     }
