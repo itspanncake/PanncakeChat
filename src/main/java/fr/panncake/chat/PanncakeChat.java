@@ -33,4 +33,8 @@ public class PanncakeChat extends JavaPlugin {
     public static PanncakeChat getInstance() {
         return instance;
     }
+
+    public RedisManager getRedisManager() {
+        return redisManager;
+    }
 }
