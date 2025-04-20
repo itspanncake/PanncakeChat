@@ -1,5 +1,6 @@
 package fr.panncake.chat;
 
+import fr.panncake.chat.managers.ChannelManager;
 import fr.panncake.chat.managers.RedisManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,6 +9,7 @@ public class PanncakeChat extends JavaPlugin {
 
     private static PanncakeChat instance;
 
+    private ChannelManager channelManager;
     private RedisManager redisManager;
 
     @Override
@@ -15,6 +17,7 @@ public class PanncakeChat extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
 
+        this.channelManager = new ChannelManager();
         this.redisManager = new RedisManager(
                 getConfig().getString("redis.host"),
                 getConfig().getInt("redis.port"),
@@ -32,6 +35,10 @@ public class PanncakeChat extends JavaPlugin {
 
     public static PanncakeChat getInstance() {
         return instance;
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
     }
 
     public RedisManager getRedisManager() {
