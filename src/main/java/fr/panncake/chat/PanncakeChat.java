@@ -41,6 +41,10 @@ public class PanncakeChat extends JavaPlugin {
             audiences.close();
         }
 
+        if (redisManager != null) {
+            redisManager.disconnect();
+        }
+
         getLogger().info("PanncakeChat has been disabled!");
     }
 
